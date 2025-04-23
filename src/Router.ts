@@ -3,12 +3,15 @@ import userManager, { login } from './oidc'
 
 const Home = () => import('./pages/Home.vue')
 const Partners = () => import('./pages/Partners.vue')
+const Volonters = () => import('./pages/Volonters.vue')
+
 import LoginCallback from './LoginCallback.vue';
 import LogoutCallback from './LogoutCallback.vue';
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/partners', component: Partners},
+  { path: '/partners', component: Partners },
+  { path: '/volonters', component: Volonters },
   { path: '/authentication/login-callback', component: LoginCallback },
   { path: '/authentication/logout-callback', component: LogoutCallback }
 ]
