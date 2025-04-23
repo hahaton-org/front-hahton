@@ -1,12 +1,12 @@
 <template>
   <div class="home-page">
     <Header />
-    <HeroBanner />
-    <HowItWorks />
+    <HeroBanner id="main" />
+    <HowItWorks id="how-it-works" />
     <CurrentBonuses />
     <PartnersSection />
-    <AboutProject />
-    <LatestNews />
+    <AboutProject id="about" />
+    <LatestNews id="news" />
     <FooterSection />
   </div>
 </template>

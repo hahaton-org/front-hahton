@@ -2,7 +2,11 @@
   <header class="header">
     <div class="container header-container">
       <div class="logo">
-        <n-avatar src="https://cdn-icons-png.flaticon.com/512/3716/3716158.png" round :size="50" />
+        <n-avatar
+          src="https://cdn-icons-png.flaticon.com/512/3716/3716158.png"
+          round
+          :size="50"
+        />
         <div class="logo-text">
           <h1>Волонтерские Бонусы</h1>
           <p>Под патронатом Ресурсного центра поддержки добровольчества</p>
@@ -11,11 +15,35 @@
 
       <nav>
         <n-space>
-          <n-button text type="primary" size="large">Главная</n-button>
-          <n-button text size="large">Для волонтеров</n-button>
-          <n-button text size="large">Для партнеров</n-button>
-          <n-button text size="large">О проекте</n-button>
-          <n-button text size="large">Новости</n-button>
+          <n-button
+            text
+            type="primary"
+            size="large"
+            @click="scrollTo('main')"
+          >
+            Главная
+          </n-button>
+          <n-button
+            text
+            size="large"
+            @click="scrollTo('how-it-works')"
+          >
+            Как это работает
+          </n-button>
+          <n-button
+            text
+            size="large"
+            @click="scrollTo('about')"
+          >
+            О проекте
+          </n-button>
+          <n-button
+            text
+            size="large"
+            @click="scrollTo('news')"
+          >
+            Новости
+          </n-button>
         </n-space>
       </nav>
 
@@ -29,6 +57,20 @@
 
 <script setup>
 import { NButton, NSpace, NAvatar } from 'naive-ui'
+
+const scrollTo = (id) => {
+  const element = document.getElementById(id)
+  if (element) {
+    // Плавная прокрутка с отступом от верха
+    window.scrollTo({
+      top: element.offsetTop - 80, // 80px - высота хедера
+      behavior: 'smooth'
+    })
+
+    // Обновляем URL без перезагрузки страницы
+    history.pushState(null, null, `#${id}`)
+  }
+}
 </script>
 
 <style scoped>

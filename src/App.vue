@@ -16,6 +16,10 @@ const theme = ref(null) // Можно переключить на darkTheme дл
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+[id] {
+  scroll-margin-top: 100px; /* Отступ сверху для якорных ссылок */
+}
+
 :root {
   --primary-blue: #3366ff;
   --secondary-green: #00b578;
