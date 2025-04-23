@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, h } from 'vue'
+import { ref, computed, onMounted, h, Component } from 'vue'
 import { NLayout, NLayoutSider, NLayoutContent, NMenu, NCard, NUpload, NUploadDragger, NIcon, NText, NP, NSpace, NButton, NInput, NDataTable, NTabs, NTabPane } from 'naive-ui'
 import { CloudUploadOutline, BookOutline, PeopleOutline, BusinessOutline } from '@vicons/ionicons5'
+import AdminCard from '../components/AdminPanel/AdminCard.vue'
 import api from '../api'
-const token = ref(localStorage.getItem('admin-token') || '')
+import UploadCard from '../components/AdminPanel/UploadCard.vue'
+
 const activeKey = ref('upload')
-const csvDelimiter = ref(null)
 const historyLoading = ref(false)
 const volunteersLoading = ref(false)
 const partnersLoading = ref(false)
@@ -21,28 +22,14 @@ const currentPartner = ref(null)
 const pagination = ref({
   pageSize: 10,
 })
-
+function renderIcon(icon: Component) {
+  return () => h(NIcon, { component: icon })
+}
 const menuOptions = [
-  {
-    label: 'Загрузка CSV',
-    key: 'upload',
-    icon: () => h(CloudUploadOutline),
-  },
-  {
-    label: 'История бонусов',
-    key: 'history',
-    icon: () => h(BookOutline),
-  },
-  {
-    label: 'Волонтёры',
-    key: 'volunteers',
-    icon: () => h(PeopleOutline),
-  },
-  {
-    label: 'Партнёры',
-    key: 'partners',
-    icon: () => h(BusinessOutline),
-  },
+  { label: 'Загрузка CSV', key: 'upload', icon: renderIcon(CloudUploadOutline) },
+  { label: 'История бонусов', key: 'history', icon: renderIcon(BookOutline) },
+  { label: 'Волонтёры', key: 'volunteers', icon: renderIcon(PeopleOutline) },
+  { label: 'Партнёры', key: 'partners', icon: renderIcon(BusinessOutline) }
 ]
 
 const historyColumns = [
@@ -53,7 +40,6 @@ const historyColumns = [
   { title: 'Дата выдачи', key: 'issue_date' },
   { title: 'Статус', key: 'status' },
 ]
-
 const volunterColumns = [
   { title: 'ID', key: 'id' },
   { title: 'ФИО', key: 'full_name' },
@@ -87,7 +73,6 @@ const volunterColumns = [
       }),
   },
 ]
-
 const partnerColumns = [
   { title: 'ID', key: 'id' },
   { title: 'Название', key: 'name' },
@@ -158,30 +143,7 @@ const fetchPartners = async () => {
   partners.value = await api.get('api/partners').json();
 }
 
-const handleUploadFinish = ({ file }) => {
-  console.log(`Файл ${file.name} успешно загружен`)
-  fetchBonusHistory()
-}
 
-const handleUploadError = ({ file }) => {
-  console.error(`Ошибка загрузки файла ${file.name}`)
-}
-
-const downloadTemplate = () => {
-  const csvContent =
-    'data:text/csv;charset=utf-8,' +
-    'volunteer_id,partner_id,bonus_amount,issue_date\n' +
-    '1,1,100,2023-01-01\n' +
-    '2,1,150,2023-01-02'
-
-  const encodedUri = encodeURI(csvContent)
-  const link = document.createElement('a')
-  link.setAttribute('href', encodedUri)
-  link.setAttribute('download', 'bonus_template.csv')
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-}
 
 const exportHistoryToCSV = () => {
   const headers = Object.keys(bonusHistory.value[0]).join(',')
@@ -221,7 +183,7 @@ const handleVolunteerSubmit = async (formData) => {
       method,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token.value}`,
+        // Authorization: `Bearer ${token.value}`,
       },
       body: JSON.stringify(formData),
     })
@@ -245,19 +207,8 @@ const editPartner = (partner) => {
 }
 
 const deletePartner = async (id) => {
-  try {
-    await fetch(`/api/partners/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token.value}`,
-      },
-    })
-    console.log('Партнёр успешно удалён')
-    fetchPartners()
-  } catch (error) {
-    console.error('Ошибка удаления партнёра')
-    console.error(error)
-  }
+  await api.delete(`api/partners${id}`);
+  fetchPartners();
 }
 
 const handlePartnerSubmit = async (formData) => {
@@ -269,7 +220,7 @@ const handlePartnerSubmit = async (formData) => {
       method,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token.value}`,
+        // Authorization: `Bearer ${token.value}`,
       },
       body: JSON.stringify(formData),
     })
@@ -294,43 +245,27 @@ onMounted(() => {
 </script>
 <template>
   <NLayout has-sider>
-    <NLayoutSider bordered show-trigger collapse-mode="width" :collapsed-width="64" :width="240" :native-scrollbar="false">
+    <NLayoutSider bordered show-trigger collapse-mode="width" :collapsed-width="64" :width="240"
+      :native-scrollbar="false">
       <NMenu v-model:value="activeKey" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions" />
     </NLayoutSider>
     <NLayoutContent>
       <div class="admin-content">
-        <NCard v-if="activeKey === 'upload'" title="Загрузка CSV">
-          <NUpload
-            action="api/upload-csv"
-            :headers="{
-              Authorization: `Bearer ${token}`
-            }"
-            :data="{
-              type: 'bonuses'
-            }" @finish="handleUploadFinish" @error="handleUploadError">
-            <NUploadDragger style="display:flex; flex-direction: column; align-items: center;">
-              <NIcon size="48" :depth="3" :component="CloudUploadOutline" />
-              <NText>Нажмите или перетащите файл для загрузки</NText>
-              <NP depth="3">Загрузите CSV файл с данными бонусов</NP>
-            </NUploadDragger>
-          </NUpload>
-          <NSpace vertical class="mt-4">
-            <NInput v-model:value="csvDelimiter" placeholder="Разделитель (по умолчанию ,)" />
-            <NButton @click="downloadTemplate" type="primary" class="mt-2">Скачать шаблон CSV</NButton>
-          </NSpace>
-        </NCard>
+        <UploadCard v-if="activeKey === 'upload'"></UploadCard>
         <NCard v-if="activeKey === 'history'" title="История выдачи бонусов">
-          <NDataTable :columns="historyColumns" :data="bonusHistory" :pagination="pagination" :loading="historyLoading" bordered striped />
+          <NDataTable :columns="historyColumns" :data="bonusHistory" :pagination="pagination" :loading="historyLoading"
+            bordered striped />
           <NSpace justify="end" class="mt-4">
             <NButton @click="exportHistoryToCSV" type="primary">Экспорт в CSV</NButton>
           </NSpace>
         </NCard>
+        <!-- <AdminCard v-if="activeKey === 'volunteers'" :columns="volunterColumns" :data="filteredVolunteers" placeholder="Поиск волонтёров..."></AdminCard> -->
         <NCard v-if="activeKey === 'volunteers'" title="Управление волонтёрами">
           <NTabs type="line">
             <NTabPane name="list" tab="Список">
               <NSpace vertical>
-                <NInput v-model:value="volunteerSearch" placeholder="Поиск волонтёров..." clearable/>
-                <NDataTable :columns="volunterColumns" :data="filteredVolunteers" :pagination="pagination" :loading="volunteersLoading" bordered />
+                <NInput v-model:value="volunteerSearch" placeholder="Поиск волонтёров..." clearable />
+                <NDataTable :columns="volunterColumns" :data="filteredVolunteers" bordered />
               </NSpace>
             </NTabPane>
             <NTabPane name="edit" tab="Добавить/Редактировать">
@@ -343,7 +278,8 @@ onMounted(() => {
             <NTabPane name="list" tab="Список">
               <NSpace vertical>
                 <NInput v-model:value="partnerSearch" placeholder="Поиск партнёров..." clearable />
-                <NDataTable :columns="partnerColumns" :data="filteredPartners" :pagination="pagination" :loading="partnersLoading" bordered />
+                <NDataTable :columns="partnerColumns" :data="filteredPartners" :pagination="pagination"
+                  :loading="partnersLoading" bordered />
               </NSpace>
             </NTabPane>
             <NTabPane name="edit" tab="Добавить/Редактировать">
