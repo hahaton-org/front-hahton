@@ -8,7 +8,7 @@
 <template>
   <NFlex>
     <NAvatar round lazy :size="64" src="https://avatar.iran.liara.run/public" />
-    <NText>{{ partner.nameOrganization }}</NText>
+    <NText>{{ partner.name }}</NText>
   </NFlex>
 </template>
 <style scoped>

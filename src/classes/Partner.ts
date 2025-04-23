@@ -1,8 +1,9 @@
-import { Bonus } from "./Bonus";
-
 export class Partner {
   id: string;
-  nameOrganization: string;
+  inn: string;
+  name: string;
   type: string;
-  listBonus: Bonus[];
+  mail: string;
+  active: boolean;
+  createdAt: string;
 }
