@@ -2,56 +2,15 @@ import { createWebHistory, createRouter } from 'vue-router'
 import userManager, { login } from './oidc'
 
 const Home = () => import('./pages/Home.vue')
-const About = () => import('./pages/About.vue')
-const Awards = () => import('./pages/Awards.vue')
-const Dean = () => import('./pages/Dean.vue')
-const Deputy = () => import('./pages/Deputy.vue')
-const Disciplines = () => import('./pages/Disciplines.vue')
-const Dissertation = () => import('./pages/Dissertation.vue')
-const ProfessionalDevelopments = () => import('./pages/ProfessionalDevelopments.vue')
-const PublicActivities = () => import('./pages/PublicActivities.vue')
-const ScienceProjects = () => import('./pages/ScienceProjects.vue')
-const Stats = () => import('./pages/Stats.vue')
-const University = () => import('./pages/University.vue')
-const Work = () => import('./pages/Work.vue')
-const Admin = () => import('./pages/Admin.vue')
-const Resume = () => import('./pages/Resume.vue')
-
-const Page404 = () => import('./pages/404.vue')
-const Page403 = () => import('./pages/403.vue')
-const Page500 = () => import('./pages/500.vue')
-const Page418 = () => import('./pages/418.vue')
-
-const Registration = () => import('./pages/Registration.vue')
-const LoginCallback = () => import('./LoginCallback.vue')
-const LogoutCallback = () => import('./LogoutCallback.vue')
-const SilentCallback = () => import('./SilentCallback.vue')
+const Partners = () => import('./pages/Partners.vue')
+import LoginCallback from './LoginCallback.vue';
+import LogoutCallback from './LogoutCallback.vue';
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/about', component: About },
-  { path: '/awards', component: Awards },
-  { path: '/dean', component: Dean },
-  { path: '/deputy', component: Deputy },
-  { path: '/disciplines', component: Disciplines },
-  { path: '/dissertation', component: Dissertation },
-  { path: '/professionalDevelopments', component: ProfessionalDevelopments },
-  { path: '/publicActivities', component: PublicActivities },
-  { path: '/scienceProjects', component: ScienceProjects },
-  { path: '/stats', component: Stats },
-  { path: '/university', component: University },
-  { path: '/work', component: Work },
-  { path: '/admin', component: Admin },
-  { path: '/resume/:id', component: Resume },
+  { path: '/partners', component: Partners},
   { path: '/authentication/login-callback', component: LoginCallback },
-  { path: '/authentication/logout-callback', component: LogoutCallback },
-  { path: '/authentication/silent-callback', component: SilentCallback },
-  { path: "/404", component: Page404 },
-  { path: "/403", component: Page403 },
-  { path: "/500", component: Page500 },
-  { path: "/418", component: Page418 },
-  { path: '/registration', component: Registration},
-  { path: "/:catchAll(.*)", component: Page404 },
+  { path: '/authentication/logout-callback', component: LogoutCallback }
 ]
 
 const router = createRouter({

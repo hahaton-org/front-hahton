@@ -1,85 +1,58 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+  import { NLayout, NLayoutContent, NLayoutHeader, NLayoutFooter, NText, NButton } from 'naive-ui'
+  import { RouterView } from 'vue-router'
+  import { ref, onBeforeMount, onMounted, onBeforeUnmount, watch, watchEffect, computed } from 'vue'
+  import userManager, { isAuthenticated, login, logout, isUserCreated, userCreated } from './oidc';
+  import router from './Router';
+  const auth = ref<boolean>(false);
+  const updateAuthState = async () => {
+    auth.value = await isAuthenticated();
+    if (auth.value && !userCreated.value)
+      router.replace('/registration');
+  };
+  onMounted(async () => {
+    updateAuthState();
+    userManager.events.addUserLoaded(updateAuthState);
+    userManager.events.addUserUnloaded(() => {
+      auth.value = false;
+    });
+  });
+  onBeforeUnmount(() => {
+    userManager.events.removeUserLoaded(updateAuthState);;
+    userManager.events.removeUserUnloaded(() => {
+      auth.value = false;
+    });
+  });
 </script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+  <NLayout>
+    <NLayoutHeader class="headfoot">
+      <NButton class="loginoutbtn" v-if="auth" :onClick="logout">Войти</NButton>
+      <NButton class="loginoutbtn" v-else="auth" :onClick="login">Выйти</NButton>
+    </NLayoutHeader>
+    <NLayoutContent content-style="min-height: calc(100dvh - 6rem); padding: 1rem; min-width: 320px;">
+      <RouterView />
+    </NLayoutContent>
+    <NLayoutFooter class="headfoot">
+      <NText>&copy; Написать потом сюда</NText>
+    </NLayoutFooter>
+  </NLayout>
 </template>
-
 <style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+  .routerview {
+    padding: 0 1rem; min-width: calc(200px + 4rem);
   }
-
-  .logo {
-    margin: 0 2rem 0 0;
+  .headfoot{
+    font-size: large;
+    font-weight: bold;
+    display:flex;
+    text-wrap-mode: nowrap;
+    justify-content:center;
+    align-items: center;
+    height: 3rem;
+    padding: 0 1rem;
   }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+  .loginoutbtn{
+    margin-left: 1rem;
   }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
 </style>
