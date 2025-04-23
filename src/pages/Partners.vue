@@ -1,24 +1,15 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
-  import ListBlock from '../components/ListBlock.vue'
-  import { Award } from '../classes/Award';
   import api from '../api';
-  const awards: Award[] = [
-    {
-      id: "sdf",
-      name: "asd",
-      date: "ast"
-    }
-  ];
-  const bonuses = ref<Award[]>([]);
+  import VolonterCard from '../components/VolonterCard.vue';
+  import { Volonter } from '../classes/Volonter';
+  const volonters = ref<Volonter[]>([]);
   onMounted(async () => {
-    // awards.value = await api.get<Award[]>('api/volonter/{guid}/awards').json();
-    bonuses.value = await api.get<Award[]>('api/volonter/{guid}/bonuses').json();
+    volonters.value = await api.get('api/volonter').json();
   });
 </script>
 <template>
-  <ListBlock :data="awards"></ListBlock>
-  <ListBlock :data="bonuses"></ListBlock>
+  <VolonterCard v-for="volonter of volonters" :volonter="volonter"></VolonterCard>
 </template>
 <style scoped>
 </style>
