@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { onMounted, ref } from 'vue';
   import api from '../api';
-  import VolonterCard from '../components/VolonterCard.vue';
+  import VolonterCard from '../components/VolunteerCard.vue';
   import { Volunteer } from '../classes/Volunteer';
   import router from '../Router';
   import { NList, NListItem } from 'naive-ui'

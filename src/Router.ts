@@ -4,7 +4,7 @@ import userManager, { login } from './oidc'
 const Home = () => import('./pages/Home.vue')
 const Partners = () => import('./pages/Partners.vue')
 const AdminPanel = () => import('./pages/AdminPanel.vue')
-const Volonters = () => import('./pages/Volonters.vue')
+const Volonters = () => import('./pages/Volunteers.vue')
 import LoginCallback from './LoginCallback.vue'
 import LogoutCallback from './LogoutCallback.vue'
 
