@@ -1,60 +1,72 @@
-<script setup lang="ts">
-import { NLayout, NLayoutContent, NLayoutHeader, NLayoutFooter, NText, NButton } from 'naive-ui'
-import { RouterView } from 'vue-router'
-import { ref, onBeforeMount, onMounted, onBeforeUnmount, watch, watchEffect, computed } from 'vue'
-import userManager, { isAuthenticated, login, logout, isUserCreated, userCreated } from './oidc'
-import router from './Router'
-const auth = ref<boolean>(false)
-const updateAuthState = async () => {
-  auth.value = await isAuthenticated()
-  if (auth.value && !userCreated.value) router.replace('/registration')
-}
-onMounted(async () => {
-  updateAuthState()
-  userManager.events.addUserLoaded(updateAuthState)
-  userManager.events.addUserUnloaded(() => {
-    auth.value = false
-  })
-})
-onBeforeUnmount(() => {
-  userManager.events.removeUserLoaded(updateAuthState)
-  userManager.events.removeUserUnloaded(() => {
-    auth.value = false
-  })
-})
-</script>
 <template>
-  <NLayout>
-    <NLayoutHeader class="headfoot">
-      <NButton class="loginoutbtn" v-if="auth" :onClick="logout">Войти</NButton>
-      <NButton class="loginoutbtn" v-else="auth" :onClick="login">Выйти</NButton>
-    </NLayoutHeader>
-    <NLayoutContent
-      content-style="min-height: calc(100dvh - 6rem); padding: 1rem; min-width: 320px;"
-    >
-      <RouterView />
-    </NLayoutContent>
-    <NLayoutFooter class="headfoot">
-      <NText>&copy; Написать потом сюда</NText>
-    </NLayoutFooter>
-  </NLayout>
+  <n-config-provider :theme="theme">
+    <n-message-provider>
+      <router-view />
+    </n-message-provider>
+  </n-config-provider>
 </template>
-<style scoped>
-.routerview {
-  padding: 0 1rem;
-  min-width: calc(200px + 4rem);
+
+<script setup>
+import { ref } from 'vue'
+import { darkTheme } from 'naive-ui'
+
+const theme = ref(null) // Можно переключить на darkTheme для темной темы
+</script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --primary-blue: #3366ff;
+  --secondary-green: #00b578;
+  --light-gray: #f7f8fa;
+  --dark-gray: #1a1a1a;
+  --white: #ffffff;
 }
-.headfoot {
-  font-size: large;
-  font-weight: bold;
-  display: flex;
-  text-wrap-mode: nowrap;
-  justify-content: center;
-  align-items: center;
-  height: 3rem;
-  padding: 0 1rem;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    sans-serif;
 }
-.loginoutbtn {
-  margin-left: 1rem;
+
+body {
+  line-height: 1.6;
+  color: var(--dark-gray);
+  background-color: var(--light-gray);
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.section-title h2 {
+  font-size: 2rem;
+  color: var(--primary-blue);
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.section-title p {
+  color: #666;
+  font-size: 1rem;
 }
 </style>
