@@ -7,6 +7,8 @@ import BonusHistoryCard from '../components/AdminPanel/BonusHistoryCard.vue'
 import VolunteersCard from '../components/AdminPanel/VolunteersCard.vue'
 import PartnersCard from '../components/AdminPanel/PartnersCard.vue'
 import api from '../api'
+import { Partner } from '../classes/Partner'
+import { Volunteer } from '../classes/Volunteer'
 
 const activeKey = ref('upload')
 const historyLoading = ref(false)
@@ -14,10 +16,10 @@ const volunteersLoading = ref(false)
 const partnersLoading = ref(false)
 
 const bonusHistory = ref([])
-const volunteers = ref([])
-const partners = ref([])
-const currentVolunteer = ref(null)
-const currentPartner = ref(null)
+const volunteers = ref<Volunteer[]>([])
+const partners = ref<Partner[]>([])
+const currentVolunteer = ref<Volunteer>(null)
+const currentPartner = ref<Partner>(null)
 
 function renderIcon(icon: Component) {
   return () => h(NIcon, { component: icon })
@@ -76,7 +78,7 @@ const exportHistoryToCSV = () => {
   document.body.removeChild(link)
 }
 
-const editVolunteer = (volunteer) => {
+const editVolunteer = (volunteer: Volunteer) => {
   currentVolunteer.value = { ...volunteer }
   activeKey.value = 'volunteers'
 }
@@ -86,33 +88,18 @@ const deleteVolunteer = async (id) => {
   fetchVolunteers()
 }
 
-const handleVolunteerSubmit = async (formData) => {
-  try {
-    const url = formData.id ? `/api/volunteers/${formData.id}` : '/api/volunteers'
-    const method = formData.id ? 'PUT' : 'POST'
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-
-    if (response.ok) {
-      console.log(formData.id ? 'Волонтёр обновлён' : 'Волонтёр добавлен')
-      fetchVolunteers()
-      currentVolunteer.value = null
-    } else {
-      throw new Error('Ошибка сервера')
-    }
-  } catch (error) {
-    console.error('Ошибка сохранения волонтёра')
-    console.error(error)
-  }
+const handleVolunteerSubmit = async (volunteer: Volunteer) => {
+  const url = volunteer.id ? `/api/volunteers/${volunteer.id}` : '/api/volunteers';
+  const method = volunteer.id ? 'PUT' : 'POST';
+  if (method === 'PUT')
+    await api.put('api/volunteers', { json: JSON.stringify(volunteer) });
+  else
+    await api.post('api/volunteer', { json: JSON.stringify(volunteer) });
+  fetchVolunteers()
+  currentVolunteer.value = null;
 }
 
-const editPartner = (partner) => {
+const editPartner = (partner: Partner) => {
   currentPartner.value = { ...partner }
   activeKey.value = 'partners'
 }
@@ -157,48 +144,20 @@ onMounted(() => {
 
 <template>
   <NLayout has-sider>
-    <NLayoutSider
-      bordered
-      show-trigger
-      collapse-mode="width"
-      :collapsed-width="64"
-      :width="240"
-      :native-scrollbar="false"
-    >
-      <NMenu
-        v-model:value="activeKey"
-        :collapsed-width="64"
-        :collapsed-icon-size="22"
-        :options="menuOptions"
-      />
+    <NLayoutSider bordered show-trigger collapse-mode="width" :collapsed-width="64" :width="240"
+      :native-scrollbar="false">
+      <NMenu v-model:value="activeKey" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions" />
     </NLayoutSider>
     <NLayoutContent>
       <div class="admin-content">
         <UploadCard v-if="activeKey === 'upload'" />
-        <BonusHistoryCard
-          v-if="activeKey === 'history'"
-          :history="bonusHistory"
-          :loading="historyLoading"
-          @export="exportHistoryToCSV"
-        />
-        <VolunteersCard
-          v-if="activeKey === 'volunteers'"
-          :volunteers="volunteers"
-          :loading="volunteersLoading"
-          :current-volunteer="currentVolunteer"
-          @edit="editVolunteer"
-          @delete="deleteVolunteer"
-          @submit="handleVolunteerSubmit"
-        />
-        <PartnersCard
-          v-if="activeKey === 'partners'"
-          :partners="partners"
-          :loading="partnersLoading"
-          :current-partner="currentPartner"
-          @edit="editPartner"
-          @delete="deletePartner"
-          @submit="handlePartnerSubmit"
-        />
+        <BonusHistoryCard v-if="activeKey === 'history'" :history="bonusHistory" :loading="historyLoading"
+          @export="exportHistoryToCSV" />
+        <VolunteersCard v-if="activeKey === 'volunteers'" :volunteers="volunteers" :loading="volunteersLoading"
+          :current-volunteer="currentVolunteer" @edit="editVolunteer" @delete="deleteVolunteer"
+          @submit="handleVolunteerSubmit" />
+        <PartnersCard v-if="activeKey === 'partners'" :partners="partners" :loading="partnersLoading"
+          :current-partner="currentPartner" @edit="editPartner" @delete="deletePartner" @submit="handlePartnerSubmit" />
       </div>
     </NLayoutContent>
   </NLayout>

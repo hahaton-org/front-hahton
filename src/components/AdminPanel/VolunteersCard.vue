@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import { NCard, NTabs, NTabPane, NSpace, NInput, NDataTable, NButton } from 'naive-ui'
-import { ref, computed } from 'vue'
+import { ref, computed, h } from 'vue'
 import VolunteerEditForm from './VolunteerEditForm.vue'
+import { Volunteer } from '../../classes/Volunteer';
 
 const props = defineProps<{
-  volunteers: any[]
+  volunteers: Volunteer[];
   loading: boolean
-  currentVolunteer: any
-}>()
+  currentVolunteer: Volunteer | null
+}>();
 
-const emit = defineEmits(['edit', 'delete', 'submit'])
+const emit = defineEmits<{
+  edit: [volunteer: Volunteer];
+  delete: [id: string],
+  submit: [volunteer: Volunteer]
+}>();
 
 const search = ref('')
 
@@ -18,9 +23,11 @@ const filteredVolunteers = computed(() => {
   const query = search.value.toLowerCase()
   return props.volunteers.filter(
     (v) =>
-      v.full_name.toLowerCase().includes(query) ||
+      v.lastName.toLowerCase().includes(query) ||
+      v.firstName.toLowerCase().includes(query) ||
+      v.middleName.toLowerCase().includes(query) ||
       v.phone.includes(query) ||
-      v.email.toLowerCase().includes(query),
+      v.mail.toLowerCase().includes(query),
   )
 })
 
@@ -69,10 +76,7 @@ const columns = [
         </NSpace>
       </NTabPane>
       <NTabPane name="edit" tab="Добавить/Редактировать">
-        <VolunteerEditForm
-          :volunteer="currentVolunteer"
-          @submit="(data) => $emit('submit', data)"
-        />
+        <VolunteerEditForm :volunteer="currentVolunteer" @submit="(volunteer: Volunteer) => $emit('submit', volunteer)" />
       </NTabPane>
     </NTabs>
   </NCard>

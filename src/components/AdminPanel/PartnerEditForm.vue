@@ -1,27 +1,24 @@
 <script setup lang="ts">
-import { NForm, NFormItem, NInput, NButton, NSpace } from 'naive-ui'
+import { Partner } from '../../classes/Partner';
+import { NForm, NFormItem, NInput, NButton, NSpace, FormRules } from 'naive-ui'
 import { ref, watch } from 'vue'
 
 const props = defineProps<{
-  partner?: {
-    id?: number
-    name?: string
-    contact_person?: string
-    phone?: string
-    email?: string
-    status?: string
-  }
-}>()
+  partner: Partner | null
+}>();
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits<{
+  submit: [partner: Partner]
+}>();
 
-const formData = ref({
-  id: undefined,
+const formData = ref<Partner>({
+  id: '',
+  inn: '',
   name: '',
-  contact_person: '',
-  phone: '',
-  email: '',
-  status: 'active',
+  type: '',
+  mail: '',
+  active: false,
+  createdAt: ''
 })
 
 watch(
@@ -31,17 +28,33 @@ watch(
       formData.value = { ...newVal }
     } else {
       formData.value = {
-        id: undefined,
+        id: '',
+        inn: '',
         name: '',
-        contact_person: '',
-        phone: '',
-        email: '',
-        status: 'active',
+        type: '',
+        mail: '',
+        active: false,
+        createdAt: ''
       }
     }
   },
   { immediate: true },
-)
+);
+
+const rules: FormRules = {
+  name: {
+    required: true
+  },
+  inn: {
+    required: true
+  },
+  type: {
+    required: true
+  },
+  mail: {
+    required: true
+  }
+};
 
 const handleSubmit = () => {
   emit('submit', formData.value)
@@ -53,14 +66,14 @@ const handleSubmit = () => {
     <NFormItem label="Название">
       <NInput v-model:value="formData.name" placeholder="Введите название" />
     </NFormItem>
-    <NFormItem label="Контактное лицо">
-      <NInput v-model:value="formData.contact_person" placeholder="Введите контактное лицо" />
+    <NFormItem label="Тип организации">
+      <NInput v-model:value="formData.type" placeholder="Введите тип организации" />
     </NFormItem>
-    <NFormItem label="Телефон">
-      <NInput v-model:value="formData.phone" placeholder="Введите телефон" />
+    <NFormItem label="ИНН">
+      <NInput v-model:value="formData.inn" placeholder="Введите ИНН" />
     </NFormItem>
     <NFormItem label="Email">
-      <NInput v-model:value="formData.email" placeholder="Введите email" />
+      <NInput v-model:value="formData.mail" placeholder="Введите email" />
     </NFormItem>
     <NSpace justify="end">
       <NButton type="primary" @click="handleSubmit">

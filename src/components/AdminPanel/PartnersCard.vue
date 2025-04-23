@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import { NCard, NTabs, NTabPane, NSpace, NInput, NDataTable, NButton } from 'naive-ui'
-import { ref, computed } from 'vue'
+import { ref, computed, h } from 'vue'
 import PartnerEditForm from './PartnerEditForm.vue'
+import { Partner } from '../../classes/Partner';
 
 const props = defineProps<{
-  partners: any[]
+  partners: Partner[]
   loading: boolean
-  currentPartner: any
+  currentPartner: Partner | null
 }>()
 
-const emit = defineEmits(['edit', 'delete', 'submit'])
+const emit = defineEmits<{
+  edit: [partner: Partner];
+  delete: [id: string],
+  submit: [partner: Partner]
+}>();
 
 const search = ref('')
 
@@ -19,9 +24,9 @@ const filteredPartners = computed(() => {
   return props.partners.filter(
     (p) =>
       p.name.toLowerCase().includes(query) ||
-      p.contact_person.toLowerCase().includes(query) ||
-      p.phone.includes(query) ||
-      p.email.toLowerCase().includes(query),
+      p.inn.toLowerCase().includes(query) ||
+      p.type.includes(query) ||
+      p.mail.toLowerCase().includes(query),
   )
 })
 
@@ -71,7 +76,7 @@ const columns = [
         </NSpace>
       </NTabPane>
       <NTabPane name="edit" tab="Добавить/Редактировать">
-        <PartnerEditForm :partner="currentPartner" @submit="(data) => $emit('submit', data)" />
+        <PartnerEditForm :partner="currentPartner" @submit="(partner: Partner) => $emit('submit', partner)" />
       </NTabPane>
     </NTabs>
   </NCard>

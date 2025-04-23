@@ -8,5 +8,5 @@ export class Volunteer {
   mail: string
   birthdayDate: string
   active: boolean
-  createdAtL: string
+  createdAt: string
 }
