@@ -7,7 +7,7 @@ const props = defineProps<{
 </script>
 <template>
   <NFlex>
-    <NAvatar />
+    <NAvatar round lazy :size="64" src="https://avatar.iran.liara.run/public" />
     <NText>{{ volonter.lastName }} {{ volonter.firstName }} {{ volonter.middleName }}</NText>
   </NFlex>
 </template>
