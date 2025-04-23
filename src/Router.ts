@@ -8,8 +8,6 @@ const Volonters = () => import('./pages/Volunteers.vue')
 import LoginCallback from './LoginCallback.vue'
 import LogoutCallback from './LogoutCallback.vue'
 
-
-
 const routes = [
   { path: '/', component: Home },
   { path: '/partners', component: Partners },

@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, h, Component } from 'vue'
-import { NLayout, NLayoutSider, NLayoutContent, NMenu, NCard, NUpload, NUploadDragger, NIcon, NText, NP, NSpace, NButton, NInput, NDataTable, NTabs, NTabPane } from 'naive-ui'
+import { NLayout, NLayoutSider, NLayoutContent, NMenu, NIcon } from 'naive-ui' // Added NIcon here
 import { CloudUploadOutline, BookOutline, PeopleOutline, BusinessOutline } from '@vicons/ionicons5'
-import AdminCard from '../components/AdminPanel/AdminCard.vue'
-import api from '../api'
 import UploadCard from '../components/AdminPanel/UploadCard.vue'
+import BonusHistoryCard from '../components/AdminPanel/BonusHistoryCard.vue'
+import VolunteersCard from '../components/AdminPanel/VolunteersCard.vue'
+import PartnersCard from '../components/AdminPanel/PartnersCard.vue'
+import api from '../api'
 
 const activeKey = ref('upload')
 const historyLoading = ref(false)
 const volunteersLoading = ref(false)
 const partnersLoading = ref(false)
-const volunteerSearch = ref('')
-const partnerSearch = ref('')
 
 const bonusHistory = ref([])
 const volunteers = ref([])
@@ -19,9 +19,6 @@ const partners = ref([])
 const currentVolunteer = ref(null)
 const currentPartner = ref(null)
 
-const pagination = ref({
-  pageSize: 10,
-})
 function renderIcon(icon: Component) {
   return () => h(NIcon, { component: icon })
 }
@@ -29,121 +26,35 @@ const menuOptions = [
   { label: 'Загрузка CSV', key: 'upload', icon: renderIcon(CloudUploadOutline) },
   { label: 'История бонусов', key: 'history', icon: renderIcon(BookOutline) },
   { label: 'Волонтёры', key: 'volunteers', icon: renderIcon(PeopleOutline) },
-  { label: 'Партнёры', key: 'partners', icon: renderIcon(BusinessOutline) }
+  { label: 'Партнёры', key: 'partners', icon: renderIcon(BusinessOutline) },
 ]
-
-const historyColumns = [
-  { title: 'ID', key: 'id' },
-  { title: 'Волонтёр', key: 'volunteer_name' },
-  { title: 'Партнёр', key: 'partner_name' },
-  { title: 'Бонус', key: 'bonus_amount' },
-  { title: 'Дата выдачи', key: 'issue_date' },
-  { title: 'Статус', key: 'status' },
-]
-const volunterColumns = [
-  { title: 'ID', key: 'id' },
-  { title: 'ФИО', key: 'full_name' },
-  { title: 'Телефон', key: 'phone' },
-  { title: 'Email', key: 'email' },
-  { title: 'Статус', key: 'status' },
-  {
-    title: 'Действия',
-    key: 'actions',
-    render: (row) =>
-      h(NSpace, null, {
-        default: () => [
-          h(
-            NButton,
-            {
-              size: 'small',
-              onClick: () => editVolunteer(row),
-            },
-            { default: () => 'Редактировать' },
-          ),
-          h(
-            NButton,
-            {
-              size: 'small',
-              type: 'error',
-              onClick: () => deleteVolunteer(row.id),
-            },
-            { default: () => 'Удалить' },
-          ),
-        ],
-      }),
-  },
-]
-const partnerColumns = [
-  { title: 'ID', key: 'id' },
-  { title: 'Название', key: 'name' },
-  { title: 'Контактное лицо', key: 'contact_person' },
-  { title: 'Телефон', key: 'phone' },
-  { title: 'Email', key: 'email' },
-  { title: 'Статус', key: 'status' },
-  {
-    title: 'Действия',
-    key: 'actions',
-    render: (row) =>
-      h(NSpace, null, {
-        default: () => [
-          h(
-            NButton,
-            {
-              size: 'small',
-              onClick: () => editPartner(row),
-            },
-            { default: () => 'Редактировать' },
-          ),
-          h(
-            NButton,
-            {
-              size: 'small',
-              type: 'error',
-              onClick: () => deletePartner(row.id),
-            },
-            { default: () => 'Удалить' },
-          ),
-        ],
-      }),
-  },
-]
-
-const filteredVolunteers = computed(() => {
-  if (!volunteerSearch.value) return volunteers.value
-  const search = volunteerSearch.value.toLowerCase()
-  return volunteers.value.filter(
-    (v) =>
-      v.full_name.toLowerCase().includes(search) ||
-      v.phone.includes(search) ||
-      v.email.toLowerCase().includes(search),
-  )
-})
-
-const filteredPartners = computed(() => {
-  if (!partnerSearch.value) return partners.value
-  const search = partnerSearch.value.toLowerCase()
-  return partners.value.filter(
-    (p) =>
-      p.name.toLowerCase().includes(search) ||
-      p.contact_person.toLowerCase().includes(search) ||
-      p.phone.includes(search) ||
-      p.email.toLowerCase().includes(search),
-  )
-})
 
 const fetchBonusHistory = async () => {
-  bonusHistory.value = await api.get('api/bonus-history').json();
+  historyLoading.value = true
+  try {
+    bonusHistory.value = await api.get('api/bonus-history').json()
+  } finally {
+    historyLoading.value = false
+  }
 }
 
 const fetchVolunteers = async () => {
-  volunteers.value = await api.get('api/volunteers').json();
+  volunteersLoading.value = true
+  try {
+    volunteers.value = await api.get('api/volunteers').json()
+  } finally {
+    volunteersLoading.value = false
+  }
 }
 
 const fetchPartners = async () => {
-  partners.value = await api.get('api/partners').json();
+  partnersLoading.value = true
+  try {
+    partners.value = await api.get('api/partners').json()
+  } finally {
+    partnersLoading.value = false
+  }
 }
-
-
 
 const exportHistoryToCSV = () => {
   const headers = Object.keys(bonusHistory.value[0]).join(',')
@@ -171,7 +82,8 @@ const editVolunteer = (volunteer) => {
 }
 
 const deleteVolunteer = async (id) => {
-  await api.delete(`api/volonters/${id}`);
+  await api.delete(`api/volonters/${id}`)
+  fetchVolunteers()
 }
 
 const handleVolunteerSubmit = async (formData) => {
@@ -183,7 +95,6 @@ const handleVolunteerSubmit = async (formData) => {
       method,
       headers: {
         'Content-Type': 'application/json',
-        // Authorization: `Bearer ${token.value}`,
       },
       body: JSON.stringify(formData),
     })
@@ -207,8 +118,8 @@ const editPartner = (partner) => {
 }
 
 const deletePartner = async (id) => {
-  await api.delete(`api/partners${id}`);
-  fetchPartners();
+  await api.delete(`api/partners${id}`)
+  fetchPartners()
 }
 
 const handlePartnerSubmit = async (formData) => {
@@ -220,7 +131,6 @@ const handlePartnerSubmit = async (formData) => {
       method,
       headers: {
         'Content-Type': 'application/json',
-        // Authorization: `Bearer ${token.value}`,
       },
       body: JSON.stringify(formData),
     })
@@ -237,56 +147,58 @@ const handlePartnerSubmit = async (formData) => {
     console.error(error)
   }
 }
+
 onMounted(() => {
   fetchBonusHistory()
   fetchVolunteers()
   fetchPartners()
 })
 </script>
+
 <template>
   <NLayout has-sider>
-    <NLayoutSider bordered show-trigger collapse-mode="width" :collapsed-width="64" :width="240"
-      :native-scrollbar="false">
-      <NMenu v-model:value="activeKey" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions" />
+    <NLayoutSider
+      bordered
+      show-trigger
+      collapse-mode="width"
+      :collapsed-width="64"
+      :width="240"
+      :native-scrollbar="false"
+    >
+      <NMenu
+        v-model:value="activeKey"
+        :collapsed-width="64"
+        :collapsed-icon-size="22"
+        :options="menuOptions"
+      />
     </NLayoutSider>
     <NLayoutContent>
       <div class="admin-content">
-        <UploadCard v-if="activeKey === 'upload'"></UploadCard>
-        <NCard v-if="activeKey === 'history'" title="История выдачи бонусов">
-          <NDataTable :columns="historyColumns" :data="bonusHistory" :pagination="pagination" :loading="historyLoading"
-            bordered striped />
-          <NSpace justify="end" class="mt-4">
-            <NButton @click="exportHistoryToCSV" type="primary">Экспорт в CSV</NButton>
-          </NSpace>
-        </NCard>
-        <!-- <AdminCard v-if="activeKey === 'volunteers'" :columns="volunterColumns" :data="filteredVolunteers" placeholder="Поиск волонтёров..."></AdminCard> -->
-        <NCard v-if="activeKey === 'volunteers'" title="Управление волонтёрами">
-          <NTabs type="line">
-            <NTabPane name="list" tab="Список">
-              <NSpace vertical>
-                <NInput v-model:value="volunteerSearch" placeholder="Поиск волонтёров..." clearable />
-                <NDataTable :columns="volunterColumns" :data="filteredVolunteers" bordered />
-              </NSpace>
-            </NTabPane>
-            <NTabPane name="edit" tab="Добавить/Редактировать">
-              <volunteer-edit-form :volunteer="currentVolunteer" @submit="handleVolunteerSubmit" />
-            </NTabPane>
-          </NTabs>
-        </NCard>
-        <NCard v-if="activeKey === 'partners'" title="Управление партнёрами">
-          <NTabs type="line">
-            <NTabPane name="list" tab="Список">
-              <NSpace vertical>
-                <NInput v-model:value="partnerSearch" placeholder="Поиск партнёров..." clearable />
-                <NDataTable :columns="partnerColumns" :data="filteredPartners" :pagination="pagination"
-                  :loading="partnersLoading" bordered />
-              </NSpace>
-            </NTabPane>
-            <NTabPane name="edit" tab="Добавить/Редактировать">
-              <partner-edit-form :partner="currentPartner" @submit="handlePartnerSubmit" />
-            </NTabPane>
-          </NTabs>
-        </NCard>
+        <UploadCard v-if="activeKey === 'upload'" />
+        <BonusHistoryCard
+          v-if="activeKey === 'history'"
+          :history="bonusHistory"
+          :loading="historyLoading"
+          @export="exportHistoryToCSV"
+        />
+        <VolunteersCard
+          v-if="activeKey === 'volunteers'"
+          :volunteers="volunteers"
+          :loading="volunteersLoading"
+          :current-volunteer="currentVolunteer"
+          @edit="editVolunteer"
+          @delete="deleteVolunteer"
+          @submit="handleVolunteerSubmit"
+        />
+        <PartnersCard
+          v-if="activeKey === 'partners'"
+          :partners="partners"
+          :loading="partnersLoading"
+          :current-partner="currentPartner"
+          @edit="editPartner"
+          @delete="deletePartner"
+          @submit="handlePartnerSubmit"
+        />
       </div>
     </NLayoutContent>
   </NLayout>
