@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import userManager, { userCreated } from './oidc.js';
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import userManager, { userCreated } from './oidc.js'
 
-const router = useRouter();
+const router = useRouter()
 
 onMounted(() => {
   userManager.signoutRedirectCallback().then(() => {
-    window.localStorage.setItem('user_api_created', 'false');
-    userCreated.value = false;
-    router.replace({ path: '/' });
-  });
-});
+    window.localStorage.setItem('user_api_created', 'false')
+    userCreated.value = false
+    router.replace({ path: '/' })
+  })
+})
 </script>
 
 <template>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import { NAvatar, NText, NFlex} from 'naive-ui'
-  import { Volonter } from '../classes/Volonter'
-  const props = defineProps<{
-    volonter: Volonter
-  }>();
+import { NAvatar, NText, NFlex } from 'naive-ui'
+import { Volonter } from '../classes/Volonter'
+const props = defineProps<{
+  volonter: Volonter
+}>()
 </script>
 <template>
   <NFlex>
@@ -11,5 +11,4 @@
     <NText>{{ volonter.lastName }} {{ volonter.firstName }} {{ volonter.middleName }}</NText>
   </NFlex>
 </template>
-<style scoped>
-</style>
+<style scoped></style>

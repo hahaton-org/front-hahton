@@ -1,5 +1,5 @@
 export class Award {
-  id: string;
-  name: string;
-  date: string;
+  id: string
+  name: string
+  date: string
 }
