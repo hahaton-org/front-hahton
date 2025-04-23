@@ -2,11 +2,11 @@
   import { onMounted, ref } from 'vue';
   import api from '../api';
   import VolonterCard from '../components/VolonterCard.vue';
-  import { Volonter } from '../classes/Volonter';
+  import { Volunteer } from '../classes/Volunteer';
   import router from '../Router';
   import { NList, NListItem } from 'naive-ui'
-  const volonters = ref<Volonter[]>([]);
-  const fakeVolonters: Volonter[] = [
+  const volonters = ref<Volunteer[]>([]);
+  const fakeVolonters: Volunteer[] = [
     {id:"asdsd", firstName:"asdg", lastName:"sdfghg", middleName:"sdfg" },
     {id:"asdsd", firstName:"asdg", lastName:"sdfghg", middleName:"sdfg" },
     {id:"asdsd", firstName:"asdg", lastName:"sdfghg", middleName:"sdfg" },

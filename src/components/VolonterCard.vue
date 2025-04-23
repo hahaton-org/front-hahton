@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { NAvatar, NText, NFlex } from 'naive-ui'
-import { Volonter } from '../classes/Volonter'
+import { Volunteer } from '../classes/Volunteer'
 const props = defineProps<{
-  volonter: Volonter
+  volonter: Volunteer
 }>()
 </script>
 <template>
