@@ -32,6 +32,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  next();
+  return;
   if (to.meta.requiresAuth) {
     if (!isAuth.value)
       redirectToSignIn()

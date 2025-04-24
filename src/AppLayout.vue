@@ -13,12 +13,9 @@
       <!-- <NButton class="loginoutbtn" v-if="auth" :onClick="logout">Войти</NButton> -->
       <!-- <NButton class="loginoutbtn" v-else="auth" :onClick="login">Выйти</NButton> -->
     </NLayoutHeader>
-    <NLayoutContent content-style="min-height: calc(100dvh - 6rem); padding: 1rem; min-width: 320px;">
+    <NLayoutContent content-style="min-height: calc(100dvh - 3rem); padding: 1rem; min-width: 320px;">
       <RouterView />
     </NLayoutContent>
-    <NLayoutFooter class="headfoot">
-      <NText>&copy; Написать потом сюда</NText>
-    </NLayoutFooter>
   </NLayout>
 </template>
 <style scoped>
