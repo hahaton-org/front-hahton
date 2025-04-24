@@ -1,7 +1,10 @@
 export class Bonus {
-  id: string
-  name: string
-  achievementId: string
-  categoryId: number
-  createdAt: string
+  id: string;
+  partnerId: string;
+  partnerName: string;
+  partnerType: string;
+  category: string;
+  description: string;
+  active: boolean;
+  createdAt: string;
 }

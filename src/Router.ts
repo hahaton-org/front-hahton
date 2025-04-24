@@ -2,16 +2,20 @@ import { createWebHistory, createRouter } from 'vue-router'
 import userManager, { login } from './oidc'
 
 const Home = () => import('./pages/Home.vue')
-const Partners = () => import('./pages/Partners.vue')
+const Partners = () => import('./pages/Volunteers.vue')
+const PartnerInfo = () => import('./pages/PartnerInfo.vue')
 const AdminPanel = () => import('./pages/AdminPanel.vue')
-const Volonters = () => import('./pages/Volunteers.vue')
+const Volunteers = () => import('./pages/Partners.vue')
+const VolunteerInfo = () => import('./pages/VolunteerInfo.vue')
 import LoginCallback from './LoginCallback.vue'
 import LogoutCallback from './LogoutCallback.vue'
 
 const routes = [
-  { path: '/', component: Home },
-  { path: '/partners', component: Partners },
-  { path: '/volonters', component: Volonters },
+  { path: '/', component: Home, meta: { layout: 'HomeLayout'} },
+  { path: '/partners', component: Volunteers },
+  { path: '/partner:id', component: PartnerInfo },
+  { path: '/volunteers', component: Partners },
+  { path: '/volunteer:id', component: VolunteerInfo },
   { path: '/authentication/login-callback', component: LoginCallback },
   { path: '/authentication/logout-callback', component: LogoutCallback },
   { path: '/adminPanel', component: AdminPanel },

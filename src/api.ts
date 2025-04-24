@@ -2,7 +2,7 @@ import ky from 'ky'
 import userManager from './oidc'
 
 const api = ky.create({
-  prefixUrl: `${window.location.origin}`,
+  prefixUrl: `http://203.31.40.27:8080`,
   hooks: {
     beforeRequest: [
       async (request) => {

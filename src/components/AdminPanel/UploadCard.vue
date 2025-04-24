@@ -3,7 +3,7 @@ import { NSpace, NCard, NUpload, NUploadDragger, NInput, NButton, NIcon, NText, 
 import { CloudUploadOutline, BookOutline, PeopleOutline, BusinessOutline } from '@vicons/ionicons5'
 import { ref } from 'vue'
 const props = defineProps<{}>()
-const token = ref(localStorage.getItem('admin-token') || '')
+const token = ref(null)
 const csvDelimiter = ref(null)
 const handleUploadFinish = ({ file }) => {
   console.log(`Файл ${file.name} успешно загружен`)
@@ -32,7 +32,7 @@ const downloadTemplate = () => {
 <template>
   <NCard title="Загрузка CSV">
     <NUpload
-      action="api/upload-csv"
+      action="http://203.31.40.27:8080/api/admin/csvload"
       :headers="{
         Authorization: `Bearer ${token}`,
       }"
