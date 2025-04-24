@@ -1,34 +1,24 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import api from '../api'
-import PartnerCard from '../components/PartnerCard.vue'
-import { guid } from '../oidc'
-import { Partner } from '../classes/Partner'
-import { NList, NListItem } from 'naive-ui'
+import VolunteerCard from '../components/VolunteerCard.vue'
+import { Volunteer } from '../classes/Volunteer'
 import router from '../Router'
-const partners = ref<Partner[]>([])
-const fakePartners: Partner[] = [
-  { id: 'asdsd', nameOrganization: 'Organization1', type: 'Cafe', listBonus: [] },
-  { id: 'asdsd', nameOrganization: 'Organization1', type: 'Cafe', listBonus: [] },
-  { id: 'asdsd', nameOrganization: 'Organization1', type: 'Cafe', listBonus: [] },
-  { id: 'asdsd', nameOrganization: 'Organization1', type: 'Cafe', listBonus: [] },
-  { id: 'asdsd', nameOrganization: 'Organization1', type: 'Cafe', listBonus: [] },
-  { id: 'asdsd', nameOrganization: 'Organization1', type: 'Cafe', listBonus: [] },
-  { id: 'asdsd', nameOrganization: 'Organization1', type: 'Cafe', listBonus: [] },
-]
+import { NList, NListItem, NText } from 'naive-ui'
+const volunteers = ref<Volunteer[]>([])
 onMounted(async () => {
-  partners.value = await api.get('api/volonter/' + (await guid()) + '/partners').json()
+  volunteers.value = await api.get('api/volunteers').json()
 })
-const click = (id: string) => router.replace('partnerinfo/' + id)
+const click = (id: string) => router.replace(`volunteer/${id}`);
 </script>
 <template>
   <NList class="carduser" hoverable clickable>
     <template #header>
-      <NText class="cardtitle" type="info">Список организаций</NText>
+      <NText class="cardtitle" type="info">Список волонтеров</NText>
     </template>
-    <NListItem v-for="partner of fakePartners" @click="click(partner.id)"
-      ><PartnerCard :partner="partner"
-    /></NListItem>
+    <NListItem v-for="volunteer of volunteers" @click="click(volunteer.id)">
+      <VolunteerCard :volunteer="volunteer" />
+    </NListItem>
   </NList>
 </template>
 <style scoped>
@@ -36,6 +26,7 @@ const click = (id: string) => router.replace('partnerinfo/' + id)
   font-size: large;
   font-weight: bold;
 }
+
 .carduser {
   border-radius: 0.5rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.09);

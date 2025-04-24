@@ -4,6 +4,8 @@ import { ref, computed, h } from 'vue'
 import PartnerEditForm from './PartnerEditForm.vue'
 import { Partner } from '../../classes/Partner';
 
+const activeTab = ref('list')
+
 const props = defineProps<{
   partners: Partner[]
   loading: boolean
@@ -31,12 +33,11 @@ const filteredPartners = computed(() => {
 })
 
 const columns = [
-  { title: 'ID', key: 'id' },
   { title: 'Название', key: 'name' },
-  { title: 'Контактное лицо', key: 'contact_person' },
+  { title: 'ИНН', key: 'inn' },
   { title: 'Телефон', key: 'phone' },
-  { title: 'Email', key: 'email' },
-  { title: 'Статус', key: 'status' },
+  { title: 'Email', key: 'mail' },
+  { title: 'Статус', key: 'active' },
   {
     title: 'Действия',
     key: 'actions',
@@ -47,7 +48,7 @@ const columns = [
             NButton,
             {
               size: 'small',
-              onClick: () => emit('edit', row),
+              onClick: () => { emit('edit', row); activeTab.value = 'edit' },
             },
             { default: () => 'Редактировать' },
           ),
@@ -68,7 +69,7 @@ const columns = [
 
 <template>
   <NCard title="Управление партнёрами">
-    <NTabs type="line">
+    <NTabs v-model:value="activeTab" type="line">
       <NTabPane name="list" tab="Список">
         <NSpace vertical>
           <NInput v-model:value="search" placeholder="Поиск партнёров..." clearable />

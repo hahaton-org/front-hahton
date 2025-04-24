@@ -1,33 +1,35 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import ListBlock from '../components/ListBlock.vue'
-import api from '../api'
-import { Award } from '../classes/Award'
+import { NFlex, NDataTable } from 'naive-ui'
 import { Bonus } from '../classes/Bonus'
-const fakeAwards: Award[] = [
-  { id: 'sdf', name: 'Award1', date: 'ast' },
-  { id: 'sdf', name: 'Award1', date: 'ast' },
-  { id: 'sdf', name: 'Award1', date: 'ast' },
-  { id: 'sdf', name: 'Award1', date: 'ast' },
-]
-const fakeBonuses: Award[] = [
-  { id: 'sdf', name: 'Bonus1', date: 'ast' },
-  { id: 'sdf', name: 'Bonus1', date: 'ast' },
-  { id: 'sdf', name: 'Bonus1', date: 'ast' },
-  { id: 'sdf', name: 'Bonus1', date: 'ast' },
-]
+import { useRoute } from 'vue-router';
+import api from '../api'
+const route = useRoute();
+const partnerId = route.params.id;
 const bonuses = ref<Bonus[]>([])
 onMounted(async () => {
-  bonuses.value = await api.get<Award[]>('api/volonter/{guid}/bonuses').json()
+  bonuses.value = await api.get<Bonus[]>(`api/partner/${partnerId}/bonuses`).json()
 })
+
+const columns = [
+  {
+    title: 'Номер',
+    key: 'id',
+  },
+  {
+    title: 'Название',
+    key: 'name',
+  },
+  {
+    title: 'Дата',
+    key: 'date',
+  },
+]
 </script>
 <template>
   <NFlex>
-    <ListBlock class="listBlock" :data="fakeBonuses"></ListBlock>
+    <NDataTable :columns="columns" :data="bonuses"> </NDataTable>
   </NFlex>
 </template>
 <style scoped>
-.listBlock {
-  width: 50%;
-}
 </style>

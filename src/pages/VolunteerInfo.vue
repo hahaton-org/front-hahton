@@ -1,35 +1,59 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import ListBlock from '../components/ListBlock.vue'
+import { NFlex, NDataTable } from 'naive-ui'
 import api from '../api'
-import { Award } from '../classes/Award'
-const fakeAwards: Award[] = [
-  { id: 'sdf', name: 'Award1', date: 'ast' },
-  { id: 'sdf', name: 'Award1', date: 'ast' },
-  { id: 'sdf', name: 'Award1', date: 'ast' },
-  { id: 'sdf', name: 'Award1', date: 'ast' },
-]
-const fakeBonuses: Award[] = [
-  { id: 'sdf', name: 'Bonus1', date: 'ast' },
-  { id: 'sdf', name: 'Bonus1', date: 'ast' },
-  { id: 'sdf', name: 'Bonus1', date: 'ast' },
-  { id: 'sdf', name: 'Bonus1', date: 'ast' },
-]
-const awards = ref<Award[]>([])
-const bonuses = ref<Award[]>([])
+import { Bonus } from '../classes/Bonus'
+import { useRoute } from 'vue-router'
+const vbonuses = ref<Bonus[]>(null);
+const vachievements = ref<Bonus[]>(null);
+const route = useRoute();
+const volunteerId = route.params.id;
 onMounted(async () => {
-  awards.value = await api.get<Award[]>('api/volonter/{guid}/awards').json()
-  bonuses.value = await api.get<Award[]>('api/volonter/{guid}/bonuses').json()
-})
+  vbonuses.value = await api.get<Bonus[]>(`api/volunteers/${volunteerId}/bonuses`).json();
+  vachievements.value = await api.get<Bonus[]>(`api/volunteers/achievement?volunteerId=${volunteerId}`).json();
+  // bonuses.value = await api.get<Bonus[]>(`api/partner/bonuses?category=${vbonus.value.category}`).json()
+});
+
+const acolumns = [
+  {
+    title: 'Категория волонтера',
+    key: 'category'
+  },
+  {
+    title: 'Дата получения',
+    key: 'createdAt',
+  },
+  {
+    title: 'Описание достижения',
+    key: 'createdAt',
+  },
+];
+
+const bcolumns = [
+  {
+    title: 'Название организации',
+    key: 'partnerName',
+  },
+  {
+    title: 'Тип организации',
+    key: 'partnerType',
+  },
+  {
+    title: 'Категория бонуса',
+    key: 'category'
+  },
+  {
+    title: 'Описание бонуса',
+    key: 'description',
+  },
+];
+
 </script>
 <template>
   <NFlex>
-    <ListBlock class="listBlock" :data="fakeAwards"></ListBlock>
-    <ListBlock class="listBlock" :data="fakeBonuses"></ListBlock>
+    <NDataTable :columns="acolumns" :data="vachievements"> </NDataTable>
+    <NDataTable :columns="bcolumns" :data="vbonuses"> </NDataTable>
   </NFlex>
 </template>
 <style scoped>
-.listBlock {
-  width: 50%;
-}
 </style>
