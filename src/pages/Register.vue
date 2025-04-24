@@ -56,7 +56,7 @@ async function login() {
         <NTabPane name="volunteer" tab="Волонтёр">
           <NForm>
             <NFormItem label="Email">
-              <NInput v-model:value="loginForm.email" placeholder="Введите Email" />
+              <NInput v-model:value="loginForm.mail" placeholder="Введите Email" />
             </NFormItem>
             <NFormItem label="Пароль">
               <NInput v-model:value="loginForm.password" type="password" placeholder="Введите пароль" />
@@ -70,7 +70,7 @@ async function login() {
         <NTabPane name="partner" tab="Партнёр">
           <NForm>
             <NFormItem label="Email">
-              <NInput v-model:value="loginForm.email" placeholder="Введите Email" />
+              <NInput v-model:value="loginForm.mail" placeholder="Введите Email" />
             </NFormItem>
             <NFormItem label="Пароль">
               <NInput v-model:value="loginForm.password" type="password" placeholder="Введите пароль" />
