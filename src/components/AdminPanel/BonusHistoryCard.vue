@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { GivenBonus } from '../../classes/GivenBonus';
 import { NCard, NDataTable, NSpace, NButton } from 'naive-ui'
 import { ref } from 'vue'
 
 const props = defineProps<{
-  history: any[]
+  history: GivenBonus[]
   loading: boolean
 }>()
 
@@ -14,12 +15,12 @@ const pagination = ref({
 const emit = defineEmits(['export'])
 
 const columns = [
-  { title: 'ID', key: 'id' },
-  { title: 'Волонтёр', key: 'volunteer_name' },
-  { title: 'Партнёр', key: 'partner_name' },
-  { title: 'Бонус', key: 'bonus_amount' },
-  { title: 'Дата выдачи', key: 'issue_date' },
-  { title: 'Статус', key: 'status' },
+  { title: 'Фамилия', key: 'volunteerLastName' },
+  { title: 'Имя', key: 'volunteerFirstName' },
+  { title: 'Отчество', key: 'volunteerMiddleName' },
+  { title: 'Партнёр', key: 'partnerName' },
+  { title: 'Категория', key: 'category' },
+  { title: 'Дата выдачи', key: 'createdAt' }
 ]
 </script>
 

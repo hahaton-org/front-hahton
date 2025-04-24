@@ -5,7 +5,9 @@ import PartnerEditForm from './PartnerEditForm.vue'
 import { Partner } from '../../classes/Partner';
 
 const activeTab = ref('list')
-
+const pagination = ref({
+  pageSize: 10,
+})
 const props = defineProps<{
   partners: Partner[]
   loading: boolean
@@ -73,7 +75,7 @@ const columns = [
       <NTabPane name="list" tab="Список">
         <NSpace vertical>
           <NInput v-model:value="search" placeholder="Поиск партнёров..." clearable />
-          <NDataTable :columns="columns" :data="filteredPartners" :loading="loading" bordered />
+          <NDataTable :columns="columns" :data="filteredPartners" :loading="loading" bordered :pagination="pagination" />
         </NSpace>
       </NTabPane>
       <NTabPane name="edit" tab="Добавить/Редактировать">

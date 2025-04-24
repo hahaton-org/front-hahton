@@ -92,9 +92,9 @@ const handleVolunteerSubmit = async (volunteer: Volunteer) => {
   const url = volunteer.id ? `/api/volunteers/${volunteer.id}` : '/api/volunteers';
   const method = volunteer.id ? 'PUT' : 'POST';
   if (method === 'PUT')
-    await api.put('api/volunteers', { json: JSON.stringify(volunteer) });
+    await api.put(`api/volunteers/${volunteer.id}`, { json: volunteer });
   else
-    await api.post('api/volunteer', { json: JSON.stringify(volunteer) });
+    await api.post('api/volunteer', { json: volunteer });
   fetchVolunteers()
   currentVolunteer.value = null;
 }
@@ -109,30 +109,15 @@ const deletePartner = async (id) => {
   fetchPartners()
 }
 
-const handlePartnerSubmit = async (formData) => {
-  try {
-    const url = formData.id ? `/api/partners/${formData.id}` : '/api/partners'
-    const method = formData.id ? 'PUT' : 'POST'
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-
-    if (response.ok) {
-      console.log(formData.id ? 'Партнёр обновлён' : 'Партнёр добавлен')
-      fetchPartners()
-      currentPartner.value = null
-    } else {
-      throw new Error('Ошибка сервера')
-    }
-  } catch (error) {
-    console.error('Ошибка сохранения партнёра')
-    console.error(error)
-  }
+const handlePartnerSubmit = async (partner: Partner) => {
+  const url = partner.id ? `/api/partners/${partner.id}` : '/api/partners';
+  const method = partner.id ? 'PUT' : 'POST';
+  if (method === 'PUT')
+    await api.put(`api/partners/${partner.id}`, { json: partner });
+  else
+    await api.post('api/partners', { json: partner });
+  fetchVolunteers()
+  currentPartner.value = null;
 }
 
 onMounted(() => {

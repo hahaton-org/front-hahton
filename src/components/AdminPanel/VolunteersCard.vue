@@ -5,7 +5,9 @@ import VolunteerEditForm from './VolunteerEditForm.vue'
 import { Volunteer } from '../../classes/Volunteer';
 
 const activeTab = ref('list')
-
+const pagination = ref({
+  pageSize: 10,
+})
 const props = defineProps<{
   volunteers: Volunteer[];
   loading: boolean
@@ -76,7 +78,7 @@ const columns = [
       <NTabPane name="list" tab="Список">
         <NSpace vertical>
           <NInput v-model:value="search" placeholder="Поиск волонтёров..." clearable />
-          <NDataTable :columns="columns" :data="filteredVolunteers" :loading="loading" bordered />
+          <NDataTable :columns="columns" :data="filteredVolunteers" :loading="loading" bordered :pagination="pagination"/>
         </NSpace>
       </NTabPane>
       <NTabPane name="edit" tab="Добавить/Редактировать">
