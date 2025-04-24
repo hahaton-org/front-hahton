@@ -9,7 +9,7 @@ import LoginCallback from './LoginCallback.vue'
 import LogoutCallback from './LogoutCallback.vue'
 
 const routes = [
-  { path: '/', component: Home },
+  { path: '/', component: Home, meta: { layout: 'HomeLayout'} },
   { path: '/partners', component: Partners },
   { path: '/volonters', component: Volonters },
   { path: '/authentication/login-callback', component: LoginCallback },
