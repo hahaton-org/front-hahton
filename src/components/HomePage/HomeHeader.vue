@@ -129,7 +129,7 @@
 <script setup>
 import { NButton, NSpace, NIcon } from 'naive-ui'
 import { ref } from 'vue'
-
+import {redirectToSignIn} from '../../auth'
 const showMobileMenu = ref(false)
 
 const scrollTo = (id) => {
@@ -149,8 +149,7 @@ const scrollToAndClose = (id) => {
 }
 
 const openAuthModal = (type = 'login') => {
-  console.log(`Open ${type} modal`)
-  showMobileMenu.value = false
+  redirectToSignIn();
 }
 </script>
 

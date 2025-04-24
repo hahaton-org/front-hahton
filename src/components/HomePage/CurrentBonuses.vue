@@ -34,7 +34,7 @@
             <div class="card-content">
               <h3>{{ bonus.title }}</h3>
               <p class="description">{{ bonus.description }}</p>
-              <n-space :size="8" style="margin-top: 16px" wrap>
+              <n-space :size="8" style="margin-top: 16px; " wrap>
                 <n-tag
                   v-for="category in bonus.categories"
                   :key="category"
@@ -180,6 +180,7 @@ const getCategoryType = (category) => {
 }
 
 .card-content {
+  min-width: 320px;
   padding: 20px;
   flex-grow: 1;
   display: flex;

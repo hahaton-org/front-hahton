@@ -1,7 +1,7 @@
 import { UserManager, WebStorageStateStore, UserManagerSettings } from 'oidc-client'
 import { ref } from 'vue'
 const oidcConfig: UserManagerSettings = {
-  authority: `${window.location.origin}/id`,
+  authority: ``,
   client_id: 'PortfolioSite',
   redirect_uri: `${window.location.origin}/authentication/login-callback`,
   post_logout_redirect_uri: `${window.location.origin}/authentication/logout-callback`,
